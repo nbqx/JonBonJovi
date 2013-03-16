@@ -2,8 +2,6 @@
 %w(version webapp).each{|x| require "JonBonJovi/#{x}"}
 
 module JonBonJovi
-  PORT = 3331
-
   extend self
   def run
 

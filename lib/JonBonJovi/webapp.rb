@@ -3,10 +3,20 @@ module JonBonJovi
   module WebApp
     extend self
 
+    def free_port
+      port = 3331
+      until `lsof -i:#{port}`.empty?
+        port += 1
+      end
+      port
+    end
+
     def run
+      @port = WebApp.free_port
+
       ::Rack::Handler::WEBrick.run(
         Server.new,
-        :Port => JonBonJovi::PORT,
+        :Port => @port,
         :Logger => ::WEBrick::Log.new('/dev/null'),
         :AccessLog => [nil,nil],
         :StartCallback => proc{ WebApp.open }
@@ -14,7 +24,7 @@ module JonBonJovi
     end
 
     def open
-      ::Launchy.open("http://localhost:#{JonBonJovi::PORT}/")
+      ::Launchy.open("http://localhost:#{@port}/")
     end
 
     class Server < ::Sinatra::Base
